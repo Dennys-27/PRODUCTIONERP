@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35818.85 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FERSOFT.ERP.Application", "FERSOFT.ERP.Application\FERSOFT.ERP.Application.csproj", "{CEEA1ED2-A932-4385-90DC-1B7EFB9AFD2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FERSOFT.ERP.Domain", "FERSOFT.ERP.Domain\FERSOFT.ERP.Domain.csproj", "{CC247D0C-CC4D-406A-B897-49CEF41F59D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FERSOFT.ERP.Infrastructure", "FERSOFT.ERP.Infrastructure\FERSOFT.ERP.Infrastructure.csproj", "{F7E125F9-AFC4-469C-B741-DACAA8C1E74F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FERSOFT.ERP.API", "FERSOFT.ERP.API\FERSOFT.ERP.API.csproj", "{8A21353C-0EC7-4664-B729-96A6280A73B9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CEEA1ED2-A932-4385-90DC-1B7EFB9AFD2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEEA1ED2-A932-4385-90DC-1B7EFB9AFD2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEEA1ED2-A932-4385-90DC-1B7EFB9AFD2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEEA1ED2-A932-4385-90DC-1B7EFB9AFD2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC247D0C-CC4D-406A-B897-49CEF41F59D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC247D0C-CC4D-406A-B897-49CEF41F59D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC247D0C-CC4D-406A-B897-49CEF41F59D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC247D0C-CC4D-406A-B897-49CEF41F59D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7E125F9-AFC4-469C-B741-DACAA8C1E74F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7E125F9-AFC4-469C-B741-DACAA8C1E74F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7E125F9-AFC4-469C-B741-DACAA8C1E74F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7E125F9-AFC4-469C-B741-DACAA8C1E74F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A21353C-0EC7-4664-B729-96A6280A73B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A21353C-0EC7-4664-B729-96A6280A73B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A21353C-0EC7-4664-B729-96A6280A73B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A21353C-0EC7-4664-B729-96A6280A73B9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0618D042-C348-4608-A20E-20344BC8E34A}
+	EndGlobalSection
+EndGlobal
