@@ -16,15 +16,17 @@ namespace FERSOFT.ERP.API.Controllers
     [ApiController]
     public class UsuariosController : ControllerBase
     {
+        private readonly IWebHostEnvironment _env;
         private readonly IUsuarioService _usuarioService;
         private readonly IMapper _mapper;
         protected RespuestaAPI _respuestaAPI;
 
-        public UsuariosController(IUsuarioService usuarioService, IMapper mapper)
+        public UsuariosController(IUsuarioService usuarioService, IMapper mapper, IWebHostEnvironment env)
         {
             _usuarioService = usuarioService;
             _mapper = mapper;
             _respuestaAPI = new();
+            _env = env;
         }
 
         [Authorize(Roles = "Admin")]
@@ -68,31 +70,61 @@ namespace FERSOFT.ERP.API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Registro([FromBody] UsuarioRegistroDto usuarioRegistroDto)
+        public async Task<IActionResult> Registro([FromForm] UsuarioRegistroDto usuarioRegistroDto)
         {
-            bool validarNombreUsuarioUnico = _usuarioService.IsUniqueUser(usuarioRegistroDto.NombreUsuario);
-
-            if (!validarNombreUsuarioUnico)
+            
+            if (!ModelState.IsValid)
             {
                 _respuestaAPI.StatusCode = HttpStatusCode.BadRequest;
                 _respuestaAPI.IsSuccess = false;
-                _respuestaAPI.ErrorMessages.Add("El nombre de Usuario ya Existe");
+                _respuestaAPI.ErrorMessages.Add("Datos de registro inválidos");
                 return BadRequest(_respuestaAPI);
             }
 
-            //En caso el usuario no exista
-            var usuario = await _usuarioService.RegistroAsync(usuarioRegistroDto);
-            if (usuario == null)
+            
+            if (!_usuarioService.IsUniqueUser(usuarioRegistroDto.NombreUsuario))
             {
                 _respuestaAPI.StatusCode = HttpStatusCode.BadRequest;
                 _respuestaAPI.IsSuccess = false;
-                _respuestaAPI.ErrorMessages.Add("Error en el Registro");
+                _respuestaAPI.ErrorMessages.Add("El nombre de usuario ya existe");
                 return BadRequest(_respuestaAPI);
             }
 
-            _respuestaAPI.StatusCode = HttpStatusCode.OK;
+            
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+            if (usuarioRegistroDto.Imagen?.Length > 0)
+            {
+                var folder = Path.Combine(_env.WebRootPath, "usuarios");
+                Directory.CreateDirectory(folder);
+
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(usuarioRegistroDto.Imagen.FileName)}";
+                var filePath = Path.Combine(folder, fileName);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await usuarioRegistroDto.Imagen.CopyToAsync(stream);
+
+                usuarioRegistroDto.RutaImagen = $"{baseUrl}/usuarios/{fileName}";
+            }
+            else
+            {
+                usuarioRegistroDto.RutaImagen = $"{baseUrl}/images/default-user.png";
+            }
+
+            
+            var usuarioCreado = await _usuarioService.RegistroAsync(usuarioRegistroDto);
+            if (usuarioCreado == null)
+            {
+                _respuestaAPI.StatusCode = HttpStatusCode.InternalServerError;
+                _respuestaAPI.IsSuccess = false;
+                _respuestaAPI.ErrorMessages.Add("Error en el registro de usuario");
+                return StatusCode(StatusCodes.Status500InternalServerError, _respuestaAPI);
+            }
+
+            
+            _respuestaAPI.StatusCode = HttpStatusCode.Created;
             _respuestaAPI.IsSuccess = true;
-            return Ok(_respuestaAPI);
+            _respuestaAPI.Result = usuarioCreado;  
+            return CreatedAtAction(nameof(Registro), new { id = usuarioCreado.Id }, _respuestaAPI);
         }
 
 

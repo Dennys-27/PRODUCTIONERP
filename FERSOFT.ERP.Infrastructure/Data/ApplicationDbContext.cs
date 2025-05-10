@@ -10,20 +10,17 @@ namespace FERSOFT.ERP.Infrastructure.Data
     public class ApplicationDbContext : IdentityDbContext<AppUsuario>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+            : base(options) { }
+
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Menu> Menus { get; set; }
+        public DbSet<MenuRol> MenuRoles { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+            // configuraciones adicionales aquí
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-        }
-
-        public DbSet<Usuario> Usuario { get; set; }
-        public DbSet<AppUsuario> AppUsuario { get; set; }
-
-        public DbSet<Menu> Menu { get; set; }
-        public DbSet<MenuRol> MenuRol { get; set; }
     }
 
 }

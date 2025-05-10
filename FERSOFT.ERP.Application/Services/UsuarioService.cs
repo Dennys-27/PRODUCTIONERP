@@ -18,14 +18,17 @@ namespace FERSOFT.ERP.Application.Services
         private readonly IUsuarioRepositorio _usuarioRepo;
         private readonly IMapper _mapper;
         private readonly IJwtService _jwtService;
+       
 
         public UsuarioService(
              IUsuarioRepositorio usuarioRepo,
-             IMapper mapper, IJwtService jwtService)
+             IMapper mapper, IJwtService jwtService
+             )
         {
             _usuarioRepo = usuarioRepo;
             _mapper = mapper;
             _jwtService = jwtService;
+            
         }
         public UsuarioDatosDto GetUsuario(string usuarioId)
         {
@@ -68,8 +71,17 @@ namespace FERSOFT.ERP.Application.Services
 
         public async Task<UsuarioDatosDto> RegistroAsync(UsuarioRegistroDto registroDto)
         {
-            var usuarioEntidad = _mapper.Map<AppUsuario>(registroDto);
-            var creado = await _usuarioRepo.RegistroAsync(usuarioEntidad, registroDto.Password);
+            //var usuarioEntidad = _mapper.Map<AppUsuario>(registroDto);
+            //entidad.RutaImagen = dto.RutaImagen;
+            //var creado = await _usuarioRepo.RegistroAsync(usuarioEntidad, registroDto.Password);
+            //return _mapper.Map<UsuarioDatosDto>(creado);
+            var entidad = _mapper.Map<AppUsuario>(registroDto);
+            // dto.RutaImagen ya contiene la URL a la imagen
+            entidad.RutaImagen = registroDto.RutaImagen;
+
+            var creado = await _usuarioRepo.RegistroAsync(entidad, registroDto.Password);
+            if (creado == null) return null;
+
             return _mapper.Map<UsuarioDatosDto>(creado);
         }
     }

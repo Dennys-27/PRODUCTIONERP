@@ -26,4 +26,8 @@
     <ProjectReference Include="..\FERSOFT.ERP.Infrastructure\FERSOFT.ERP.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\usuarios\" />
+  </ItemGroup>
+
 </Project>

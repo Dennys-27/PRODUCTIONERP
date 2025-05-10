@@ -45,7 +45,7 @@ namespace FERSOFT.ERP.Infrastructure.Repositorios
 
         public bool IsUniqueUser(string usuario)
         {
-            throw new NotImplementedException();
+            return !_db.Users.Any(u => u.UserName == usuario);
         }
 
         public async Task<AppUsuario> LoginAsync(string nombreUsuario, string password)
@@ -58,18 +58,45 @@ namespace FERSOFT.ERP.Infrastructure.Repositorios
 
         public async Task<AppUsuario> RegistroAsync(AppUsuario usuario, string password)
         {
-            var result = await _userManager.CreateAsync(usuario, password);
-            if (!result.Succeeded) return null;
-
-            // Seed roles if not exist
-            if (!await _roleManager.RoleExistsAsync("Admin"))
+            try
             {
-                await _roleManager.CreateAsync(new IdentityRole("Admin"));
-                await _roleManager.CreateAsync(new IdentityRole("Registrado"));
-            }
-            await _userManager.AddToRoleAsync(usuario, "Admin");
+                var result = await _userManager.CreateAsync(usuario, password);
 
-            return usuario;
+                if (!result.Succeeded)
+                {
+                    
+                    foreach (var error in result.Errors)
+                    {
+                        Console.WriteLine($"Error: {error.Code} - {error.Description}");
+                        
+                    }
+
+                    return null;
+                }
+
+                
+                if (!await _roleManager.RoleExistsAsync("Admin"))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("Admin"));
+                }
+
+                if (!await _roleManager.RoleExistsAsync("Registrado"))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("Registrado"));
+                }
+
+                
+                await _userManager.AddToRoleAsync(usuario, "Admin");
+
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                
+                Console.WriteLine($"Excepción: {ex.Message}");
+                
+                return null;
+            }
         }
     }
 }

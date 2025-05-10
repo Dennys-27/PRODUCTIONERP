@@ -16,6 +16,9 @@ namespace FERSOFT.ERP.Application.Mappings
         {
              CreateMap<AppUsuario, UsuarioDatosDto>().ReverseMap();
              CreateMap<AppUsuario, UsuarioDto>().ReverseMap();
+            CreateMap<UsuarioRegistroDto, AppUsuario>()
+   .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.NombreUsuario));
+            CreateMap<UsuarioDatosDto, UsuarioDto>();
         }
        
         
