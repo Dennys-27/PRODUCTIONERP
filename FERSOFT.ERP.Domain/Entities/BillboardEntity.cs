@@ -7,17 +7,21 @@ using System.Threading.Tasks;
 
 namespace FERSOFT.ERP.Domain.Entities
 {
-    public class SeatEntity : BaseEntity
+    public class BillboardEntity : BaseEntity
     {
         [Required]
-        public short Number { get; set; }
+        public DateTime Date { get; set; }
 
         [Required]
-        public short RowNumber { get; set; }
+        public TimeSpan StartTime { get; set; }
+
+        [Required]
+        public TimeSpan EndTime { get; set; }
+
+        public int MovieId { get; set; }
+        public MovieEntity Movie { get; set; }
 
         public int RoomId { get; set; }
         public RoomEntity Room { get; set; }
-
-        public bool IsAvailable { get; set; } = true;
     }
 }
