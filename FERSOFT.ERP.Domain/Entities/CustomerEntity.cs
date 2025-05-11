@@ -9,6 +9,7 @@ namespace FERSOFT.ERP.Domain.Entities
 {
     public class CustomerEntity : BaseEntity
     {
+        public int Id { get; set; }
         [Required, MaxLength(20)]
         public string DocumentNumber { get; set; }
 

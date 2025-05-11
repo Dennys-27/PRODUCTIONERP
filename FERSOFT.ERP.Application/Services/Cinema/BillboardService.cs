@@ -17,6 +17,9 @@ namespace FERSOFT.ERP.Application.Services.Cinema
         private readonly IRepositoryGeneric<BillboardEntity> _billboardRepository;
         private readonly IRepositoryGeneric<MovieEntity> _movieRepository;
         private readonly IRepositoryGeneric<RoomEntity> _roomRepository;
+        private readonly IRepositoryGeneric<SeatEntity> _seatRepository;
+        private readonly IBillboardRepository _billboardRepo;
+        private readonly IRepositoryGeneric<BookingEntity> _bookingRepository;
         private readonly IMapper _mapper;
 
 
@@ -25,6 +28,7 @@ namespace FERSOFT.ERP.Application.Services.Cinema
             IRepositoryGeneric<BillboardEntity> billboardRepository,
             IRepositoryGeneric<MovieEntity> movieRepository,
             IRepositoryGeneric<RoomEntity> roomRepository,
+            IBillboardRepository billboardRepo,
             IMapper mapper
             )
         {
@@ -32,19 +36,52 @@ namespace FERSOFT.ERP.Application.Services.Cinema
             _movieRepository = movieRepository;
             _roomRepository = roomRepository;
             _mapper = mapper;
+            _billboardRepo = billboardRepo;
         }
 
         // Método para cancelar un cartel publicitario
         public async Task CancelBillboardAsync(int billboardId)
         {
-            var billboard = await _billboardRepository.GetByIdAsync(billboardId);
+            await _billboardRepo.ExecuteInTransactionAsync(async () =>
+            {
+                var billboard = await _billboardRepo.GetBillboardWithDetailsAsync(billboardId);
 
-            if (billboard == null)
-                throw new NotFoundException("Billboard not found");
+                if (billboard == null)
+                    throw new NotFoundException("Cartelera no encontrada");
 
-            _billboardRepository.Delete(billboard);
+                if (billboard.Date.Date < DateTime.Today)
+                    throw new BusinessException("No se puede cancelar funciones de la cartelera con fecha anterior a la actual");
 
-            await _billboardRepository.SaveAsync();
+                var affectedClients = new List<string>();
+
+                // Cancelar reservas y registrar clientes
+                foreach (var booking in billboard.Bookings)
+                {
+                    affectedClients.Add(booking.Client?.Name ?? $"ClienteId: {booking.ClientId}");
+                    await _bookingRepository.UpdateAsync(booking);
+                }
+
+                // Habilitar todas las butacas
+                foreach (var seat in billboard.Room.Seats)
+                {
+                    seat.IsAvailable = true;
+                    await _seatRepository.UpdateAsync(seat);
+                }
+
+                // Eliminar la cartelera
+                await _billboardRepository.DeleteAsync(billboard);
+
+                await _bookingRepository.SaveAsync();
+                await _seatRepository.SaveAsync();
+                await _billboardRepository.SaveAsync();
+
+                
+                Console.WriteLine("Clientes afectados por la cancelación:");
+                foreach (var client in affectedClients)
+                {
+                    Console.WriteLine(client);
+                }
+            });
         }
 
         // Método para crear un cartel publicitario
@@ -81,6 +118,8 @@ namespace FERSOFT.ERP.Application.Services.Cinema
             return billboardDtoResult;
         }
 
+       
+
         // Método para obtener todos los carteles publicitarios
         public async Task<IEnumerable<BillboardDto>> GetAllBillboardsAsync()
         {
@@ -89,6 +128,39 @@ namespace FERSOFT.ERP.Application.Services.Cinema
 
             // Mapeo usando AutoMapper
             return _mapper.Map<IEnumerable<BillboardDto>>(billboards);
+        }
+
+        public async Task<BillboardDto> GetBillboardByIdAsync(int id)
+        {
+
+            var billboard = await _billboardRepository.GetByIdAsync(id);
+            if (billboard == null)
+                throw new NotFoundException("Billboard not found.");
+
+            return _mapper.Map<BillboardDto>(billboard);
+        }
+
+        public async Task UpdateBillboardAsync(BillboardDto billboardDto)
+        {
+            var billboard = await _billboardRepository.GetByIdAsync(billboardDto.Id);
+            if (billboard == null)
+                throw new NotFoundException("Billboard not found.");
+
+            billboard.MovieTitle = billboardDto.MovieTitle;
+            billboard.FunctionDate = billboardDto.FunctionDate;
+            billboard.RoomId = billboardDto.RoomId;
+
+            await _billboardRepository.UpdateAsync(billboard);
+        }
+
+        public async Task DeleteBillboardAsync(int id)
+        {
+            var billboard = await _billboardRepository.GetByIdAsync(id);
+            if (billboard == null)
+                throw new NotFoundException("Billboard not found.");
+
+            await _billboardRepository.UpdateAsync(billboard);
+            await _billboardRepository.SaveAsync(); // si aplica
         }
     }
 }

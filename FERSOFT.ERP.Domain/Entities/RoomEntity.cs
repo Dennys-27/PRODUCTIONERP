@@ -14,5 +14,6 @@ namespace FERSOFT.ERP.Domain.Entities
 
         [Required]
         public short Number { get; set; }
+        public ICollection<SeatEntity> Seats { get; set; } = new List<SeatEntity>();
     }
 }

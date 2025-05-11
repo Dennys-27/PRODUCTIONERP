@@ -17,5 +17,7 @@ namespace FERSOFT.ERP.Application.Interfaces.Cinema
 
         // Cancela una reserva usando su ID
         Task CancelBookingAsync(int bookingId);
+
+        
     }
 }

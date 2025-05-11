@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FERSOFT.ERP.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FERSOFT.ERP.Domain.Entities
+public class BookingEntity : BaseEntity
 {
-    public class BookingEntity : BaseEntity
-    {
-        [Required]
-        public DateTime Date { get; set; }
+    [Required]
+    public DateTime Date { get; set; }  // Esta es la propiedad correcta para las fechas
 
-         public int CustomerId { get; set; }
-         public CustomerEntity Customer { get; set; }
+    public int CustomerId { get; set; }
+    public CustomerEntity Customer { get; set; }
 
-         public int SeatId { get; set; }
-         public SeatEntity Seat { get; set; }
+    public int SeatId { get; set; }
+    public SeatEntity Seat { get; set; }
 
-         public int BillboardId { get; set; }
-         public BillboardEntity Billboard { get; set; }
-        
-    }
+    public int BillboardId { get; set; }
+    public BillboardEntity Billboard { get; set; }
+
+    public int MovieId { get; set; }
+    public MovieEntity Movie { get; set; }
+
+    public int ClientId { get; set; }
+    public CustomerEntity Client { get; set; }
 }

@@ -12,6 +12,10 @@ using FERSOFT.ERP.Infrastructure.Repositorios;
 using FERSOFT.ERP.Application.Interfaces;
 using FERSOFT.ERP.Application.Services;
 using FERSOFT.ERP.Domain.Entities;
+using FERSOFT.ERP.Infrastructure.Repositorios.GenericRepository;
+using FERSOFT.ERP.Infrastructure.Repositorios.Cinema;
+using FERSOFT.ERP.Application.Services.Cinema;
+using FERSOFT.ERP.Application.Interfaces.Cinema;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +33,24 @@ builder.Services.AddIdentity<AppUsuario, IdentityRole>(options =>
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+
+//Repositorio Generico
+builder.Services.AddScoped(typeof(IRepositoryGeneric<>), typeof(RepositoryGeneric<>));
+
+
+builder.Services.AddScoped <IReportRepository, ReportRepository> ();
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
+builder.Services.AddScoped<IBillboardRepository, BillboardRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+
+//Servicios
+builder.Services.AddScoped<IBillboardService, BillboardService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<ISeatService, SeatService>();
+
+
+
+
 
 // 4. AutoMapper
 builder.Services.AddAutoMapper(typeof(ERPMapper));
@@ -104,4 +126,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
+// Aquí se debe hacer el seeding de datos
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    await FERSOFT.ERP.Infrastructure.Seeding.ApplicationDbInitializer.SeedAsync(context);
+}
+
 app.Run();

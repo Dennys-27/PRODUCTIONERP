@@ -4,6 +4,7 @@ using FERSOFT.ERP.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FERSOFT.ERP.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250511040143_Actualizar modelos")]
+    partial class Actualizarmodelos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,6 +190,27 @@ namespace FERSOFT.ERP.Infrastructure.Migrations
                     b.ToTable("Billboards");
                 });
 
+            modelBuilder.Entity("FERSOFT.ERP.Domain.Entities.ClientEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClientEntity");
+                });
+
             modelBuilder.Entity("FERSOFT.ERP.Domain.Entities.CustomerEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -243,9 +267,6 @@ namespace FERSOFT.ERP.Infrastructure.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<int>("Genre")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Int")
                         .HasColumnType("int");
 
                     b.Property<short>("LengthMinutes")
@@ -555,8 +576,8 @@ namespace FERSOFT.ERP.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FERSOFT.ERP.Domain.Entities.CustomerEntity", "Client")
-                        .WithMany()
+                    b.HasOne("FERSOFT.ERP.Domain.Entities.ClientEntity", "Client")
+                        .WithMany("Bookings")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -699,6 +720,11 @@ namespace FERSOFT.ERP.Infrastructure.Migrations
                     b.Navigation("Bookings");
 
                     b.Navigation("Seats");
+                });
+
+            modelBuilder.Entity("FERSOFT.ERP.Domain.Entities.ClientEntity", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 
             modelBuilder.Entity("FERSOFT.ERP.Domain.Entities.RoomEntity", b =>

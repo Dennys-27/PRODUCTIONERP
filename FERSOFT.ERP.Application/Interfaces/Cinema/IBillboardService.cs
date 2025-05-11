@@ -9,13 +9,22 @@ namespace FERSOFT.ERP.Application.Interfaces.Cinema
 {
     public interface IBillboardService
     {
-        // Crea una nueva cartelera con los datos enviados
+        // Crea una nueva cartelera
         Task<BillboardDto> CreateBillboardAsync(BillboardDto billboardDto);
 
-        // Devuelve todas las carteleras registradas
+        // Devuelve todas las carteleras
         Task<IEnumerable<BillboardDto>> GetAllBillboardsAsync();
 
-        // Cancela una cartelera usando su ID
+        // Devuelve una cartelera por su ID
+        Task<BillboardDto> GetBillboardByIdAsync(int id);
+
+        // Actualiza los datos de una cartelera
+        Task UpdateBillboardAsync(BillboardDto billboardDto);
+
+        // Elimina una cartelera
+        Task DeleteBillboardAsync(int id);
+
+        // Cancela una cartelera (lógica de negocio específica)
         Task CancelBillboardAsync(int billboardId);
 
     }

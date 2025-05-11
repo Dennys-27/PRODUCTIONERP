@@ -23,6 +23,7 @@ namespace FERSOFT.ERP.Infrastructure.Data
         public DbSet<SeatEntity> Seats { get; set; }
 
 
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -49,6 +50,11 @@ namespace FERSOFT.ERP.Infrastructure.Data
                 .HasForeignKey(b => b.BillboardId)
                 .OnDelete(DeleteBehavior.Cascade); // Solo esta con cascada
 
+            builder.Entity<BookingEntity>()
+                .HasOne(b => b.Movie)
+                .WithMany()
+                .HasForeignKey(b => b.MovieId)
+                .OnDelete(DeleteBehavior.Restrict); // evita conflicto de cascadas
         }
     }
 

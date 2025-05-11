@@ -17,8 +17,9 @@ namespace FERSOFT.ERP.Application.Services.Cinema
         private readonly IRepositoryGeneric<BookingEntity> _bookingRepository;
         private readonly IRepositoryGeneric<SeatEntity> _seatRepository;
         private readonly IRepositoryGeneric<CustomerEntity> _customerRepository;
-        private readonly IRepositoryGeneric<MovieEntity> _movieRepository;
         private readonly IRepositoryGeneric<BillboardEntity> _billboardRepository;
+        private readonly IBookingRepository _bookingRepo;
+
         private readonly IMapper _mapper;
         public BookingService(
         IRepositoryGeneric<BookingEntity> bookingRepository,
@@ -26,31 +27,38 @@ namespace FERSOFT.ERP.Application.Services.Cinema
         IRepositoryGeneric<CustomerEntity> customerRepository,
         IRepositoryGeneric<MovieEntity> movieRepository,
         IRepositoryGeneric<BillboardEntity> billboardRepository,        
-        IMapper mapper)
+        IMapper mapper,
+        IBookingRepository bookingRepo)
         {
             _bookingRepository = bookingRepository;
             _seatRepository = seatRepository;
             _customerRepository = customerRepository;
-            _movieRepository = movieRepository;
             _mapper = mapper;
+            _bookingRepo = bookingRepo;
+            
         }
 
         // Método para cancelar una reserva
         public async Task CancelBookingAsync(int bookingId)
         {
-            var booking = await _bookingRepository.GetByIdAsync(bookingId);
-            if (booking == null)
-                throw new NotFoundException("Booking not found");
-
-            var seat = await _seatRepository.GetByIdAsync(booking.SeatId);
-            if (seat != null)
+            await _bookingRepo.ExecuteInTransactionAsync(async () =>
             {
-                seat.IsAvailable = true;
-                _seatRepository.Update(seat);
-            }
+                var booking = await _bookingRepository.GetByIdAsync(bookingId);
+                if (booking == null)
+                    throw new NotFoundException("Booking not found");
 
-            _bookingRepository.Delete(booking);
-            await _bookingRepository.SaveAsync();
+                var seat = await _seatRepository.GetByIdAsync(booking.SeatId);
+                if (seat != null)
+                {
+                    seat.IsAvailable = true;
+                    await _seatRepository.UpdateAsync(seat);
+                }
+
+                await _bookingRepository.UpdateAsync(booking);
+
+                await _bookingRepository.SaveAsync();
+                await _seatRepository.SaveAsync();
+            });
         }
 
         // Método para crear una reserva
@@ -73,7 +81,7 @@ namespace FERSOFT.ERP.Application.Services.Cinema
             await _bookingRepository.AddAsync(booking);
 
             seat.IsAvailable = false;
-            _seatRepository.Update(seat);
+            await _seatRepository.UpdateAsync(seat);
 
             await _bookingRepository.SaveAsync();
 

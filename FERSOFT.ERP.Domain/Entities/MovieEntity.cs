@@ -14,6 +14,8 @@ namespace FERSOFT.ERP.Domain.Entities
 
     public class MovieEntity : BaseEntity
     {
+        public int Int { get; set; }
+
         [Required, MaxLength(100)]
         public string Name { get; set; }
 

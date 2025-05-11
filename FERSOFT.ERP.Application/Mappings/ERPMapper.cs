@@ -23,10 +23,7 @@ namespace FERSOFT.ERP.Application.Mappings
 
 
             //Cinema
-            CreateMap<SeatEntity, SeatDto>()
-            .ForMember(dest => dest.SeatNumber, opt => opt.MapFrom(src => src.Number))
-            .ForMember(dest => dest.IsAvailable, opt => opt.MapFrom(src => true)) // Valor fijo o lógica luego
-            .ForMember(dest => dest.RoomName, opt => opt.MapFrom(src => src.Room.Name));
+            
 
             CreateMap<BillboardEntity, BillboardDto>()
             .ForMember(dest => dest.MovieName, opt => opt.MapFrom(src => src.Movie.Name))  
@@ -34,6 +31,22 @@ namespace FERSOFT.ERP.Application.Mappings
 
             CreateMap<BookingEntity, BookingDto>()
             .ForMember(dest => dest.MovieId, opt => opt.MapFrom(src => src.Billboard.MovieId));
+
+
+            // Mapeo de SeatEntity a SeatDto
+            CreateMap<SeatEntity, SeatDto>()
+                .ForMember(dest => dest.SeatNumber, opt => opt.MapFrom(src => src.Number))     // Mapeo del número del asiento
+                .ForMember(dest => dest.RowNumber, opt => opt.MapFrom(src => src.RowNumber))   // Mapeo de la fila
+                .ForMember(dest => dest.RoomName, opt => opt.MapFrom(src => src.Room.Name))    // Mapeo del nombre de la sala
+                .ForMember(dest => dest.IsAvailable, opt => opt.MapFrom(src => src.IsAvailable)) // Mapeo de la disponibilidad
+                .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => src.RoomId));        // Mapeo del RoomId
+
+            // Mapeo de SeatDto a SeatEntity (por ejemplo, para crear o actualizar un asiento)
+            CreateMap<SeatDto, SeatEntity>()
+                .ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.SeatNumber))   // Mapeo del número del asiento
+                .ForMember(dest => dest.RowNumber, opt => opt.MapFrom(src => src.RowNumber))  // Mapeo de la fila
+                .ForMember(dest => dest.IsAvailable, opt => opt.MapFrom(src => src.IsAvailable))  // Mapeo de la disponibilidad
+                .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => src.RoomId));       // Mapeo del RoomId
         }
        
         

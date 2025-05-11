@@ -9,13 +9,19 @@ namespace FERSOFT.ERP.Application.Interfaces.Cinema
 {
     public interface ISeatService
     {
-        // Obtiene todos los asientos de una sala usando su ID
+        // Create
+        Task<SeatDto> CreateSeatAsync(SeatDto seatDto);
+
+        // Read
         Task<IEnumerable<SeatDto>> GetSeatsByRoomAsync(int roomId);
+        Task<SeatDto> GetSeatByIdAsync(int seatId);
 
-        // Desactiva un asiento usando su ID
+        // Update
+        Task UpdateSeatAsync(SeatDto seatDto);
+
+        // Delete (o Inhabilitar)
         Task DisableSeatAsync(int seatId);
-
-        // Activa un asiento usando su ID
         Task EnableSeatAsync(int seatId);
+        Task DeleteSeatAsync(int seatId); // borrado real
     }
 }

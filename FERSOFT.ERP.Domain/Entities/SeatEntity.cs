@@ -19,5 +19,6 @@ namespace FERSOFT.ERP.Domain.Entities
         public RoomEntity Room { get; set; }
 
         public bool IsAvailable { get; set; } = true;
+        public bool IsOccupied { get; set; }
     }
 }

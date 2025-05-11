@@ -23,5 +23,10 @@ namespace FERSOFT.ERP.Domain.Entities
 
         public int RoomId { get; set; }
         public RoomEntity Room { get; set; }
+
+        public ICollection<SeatEntity> Seats { get; set; }
+        public ICollection<BookingEntity> Bookings { get; set; }
+        public string MovieTitle { get; set; }
+        public string FunctionDate { get; set; }
     }
 }
