@@ -18,6 +18,5 @@ public class BookingEntity : BaseEntity
     public int MovieId { get; set; }
     public MovieEntity Movie { get; set; }
 
-    public int ClientId { get; set; }
-    public CustomerEntity Client { get; set; }
+   
 }

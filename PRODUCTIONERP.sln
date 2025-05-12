@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35818.85 d17.13
+VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FERSOFT.ERP.Application", "FERSOFT.ERP.Application\FERSOFT.ERP.Application.csproj", "{CEEA1ED2-A932-4385-90DC-1B7EFB9AFD2D}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FERSOFT.ERP.Infrastructure", "FERSOFT.ERP.Infrastructure\FERSOFT.ERP.Infrastructure.csproj", "{F7E125F9-AFC4-469C-B741-DACAA8C1E74F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FERSOFT.ERP.API", "FERSOFT.ERP.API\FERSOFT.ERP.API.csproj", "{8A21353C-0EC7-4664-B729-96A6280A73B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PRODUCTIONERP.TESTING", "PRODUCTIONERP.TESTING\PRODUCTIONERP.TESTING.csproj", "{8170D6A7-875D-469C-B15C-DC324B6BAA56}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{8A21353C-0EC7-4664-B729-96A6280A73B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A21353C-0EC7-4664-B729-96A6280A73B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A21353C-0EC7-4664-B729-96A6280A73B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8170D6A7-875D-469C-B15C-DC324B6BAA56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8170D6A7-875D-469C-B15C-DC324B6BAA56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8170D6A7-875D-469C-B15C-DC324B6BAA56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8170D6A7-875D-469C-B15C-DC324B6BAA56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

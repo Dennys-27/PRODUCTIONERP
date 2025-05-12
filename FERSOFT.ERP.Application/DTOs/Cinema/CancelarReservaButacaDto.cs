@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace FERSOFT.ERP.Application.DTOs.Cinema
 {
-    public class SeatStatusDto
+    public class CancelarReservaButacaDto
     {
-        public string RoomName { get; set; }
-        public int AvailableSeats { get; set; }
-        public int OccupiedSeats { get; set; }
+        public int ButacaId { get; set; }
+        public int ReservaId { get; set; }
     }
 }

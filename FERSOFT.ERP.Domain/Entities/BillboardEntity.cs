@@ -26,7 +26,7 @@ namespace FERSOFT.ERP.Domain.Entities
 
         public ICollection<SeatEntity> Seats { get; set; }
         public ICollection<BookingEntity> Bookings { get; set; }
-        public string MovieTitle { get; set; }
-        public string FunctionDate { get; set; }
+        public string? MovieTitle { get; set; }
+        public DateTime? FunctionDate { get; set; }
     }
 }

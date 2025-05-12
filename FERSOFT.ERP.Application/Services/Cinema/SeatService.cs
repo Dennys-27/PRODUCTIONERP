@@ -66,29 +66,6 @@ namespace FERSOFT.ERP.Application.Services.Cinema
             await _seatRepositoty.DeleteAsync(seat);
         }
 
-        // DeshabilitarAsientoAsync
-        public async Task DisableSeatAsync(int seatId)
-        {
-            
-            var seat = await _seatRepositoty.GetByIdAsync(seatId);
-            if (seat == null)
-                throw new NotFoundException("Seat not found");
-
-            seat.IsAvailable = false;
-            await _seatRepositoty.UpdateAsync(seat);
-            await _seatRepositoty.SaveAsync();
-        }
-        // HabilitarAsientoAsync
-        public async Task EnableSeatAsync(int seatId)
-        {
-            var seat = await _seatRepositoty.GetByIdAsync(seatId);
-            if (seat == null)
-                throw new NotFoundException("Seat not found");
-
-            seat.IsAvailable = true;
-            await _seatRepositoty.UpdateAsync(seat);
-            await _seatRepositoty.SaveAsync();
-        }
 
         public async Task<SeatDto> GetSeatByIdAsync(int seatId)
         {
@@ -102,11 +79,8 @@ namespace FERSOFT.ERP.Application.Services.Cinema
         // ObtenerAsientosPorSalaAsync
         public async  Task<IEnumerable<SeatDto>> GetSeatsByRoomAsync(int roomId)
         {
-            var seats = await _seatRepositoty.GetAllAsync();
-
-            var roomSeats = seats.Where(s => s.RoomId == roomId).ToList();
-
-            return _mapper.Map<IEnumerable<SeatDto>>(roomSeats);
+            var seats = await _seatRepositoty.FindAsync(s => s.RoomId == roomId);
+            return _mapper.Map<IEnumerable<SeatDto>>(seats);
         }
 
         public async Task UpdateSeatAsync(SeatDto seatDto)

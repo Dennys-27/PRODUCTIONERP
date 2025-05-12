@@ -9,7 +9,10 @@ namespace FERSOFT.ERP.Domain.Interfaces
 {
     public interface IReportRepository
     {
+        // Obtener reservas de películas de terror en un rango de fechas
         Task<IEnumerable<BookingEntity>> GetTerrorBookingsInDateRangeAsync(DateTime startDate, DateTime endDate);
+
+        // Obtener el estado de las butacas por sala para el día de hoy
         Task<IEnumerable<SeatStatusDto>> GetSeatStatusByRoomForTodayAsync();
     }
 

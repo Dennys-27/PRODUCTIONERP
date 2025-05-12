@@ -8,6 +8,7 @@ namespace FERSOFT.ERP.Domain.Interfaces
 {
     public interface IBookingRepository : IRepositoryGeneric<BookingEntity>
     {
+        // Ejecutar una operación dentro de una transacción
         Task ExecuteInTransactionAsync(Func<Task> operation);
     }
 }

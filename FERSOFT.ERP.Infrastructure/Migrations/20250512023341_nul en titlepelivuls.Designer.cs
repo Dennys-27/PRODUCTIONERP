@@ -4,6 +4,7 @@ using FERSOFT.ERP.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FERSOFT.ERP.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250512023341_nul en titlepelivuls")]
+    partial class nulentitlepelivuls
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,6 +39,9 @@ namespace FERSOFT.ERP.Infrastructure.Migrations
                     b.Property<int>("BillboardId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
@@ -56,6 +62,8 @@ namespace FERSOFT.ERP.Infrastructure.Migrations
                     b.HasIndex("BillboardEntityId");
 
                     b.HasIndex("BillboardId");
+
+                    b.HasIndex("ClientId");
 
                     b.HasIndex("CustomerId");
 
@@ -548,6 +556,12 @@ namespace FERSOFT.ERP.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FERSOFT.ERP.Domain.Entities.CustomerEntity", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FERSOFT.ERP.Domain.Entities.CustomerEntity", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
@@ -567,6 +581,8 @@ namespace FERSOFT.ERP.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Billboard");
+
+                    b.Navigation("Client");
 
                     b.Navigation("Customer");
 

@@ -57,7 +57,8 @@ namespace FERSOFT.ERP.Application.Services.Cinema
                 // Cancelar reservas y registrar clientes
                 foreach (var booking in billboard.Bookings)
                 {
-                    affectedClients.Add(booking.Client?.Name ?? $"ClienteId: {booking.ClientId}");
+                    booking.Status = false;
+                    affectedClients.Add(booking.Customer?.Name ?? $"ClienteId: {booking.CustomerId}");
                     await _bookingRepository.UpdateAsync(booking);
                 }
 
@@ -68,18 +69,16 @@ namespace FERSOFT.ERP.Application.Services.Cinema
                     await _seatRepository.UpdateAsync(seat);
                 }
 
-                // Eliminar la cartelera
-                await _billboardRepository.DeleteAsync(billboard);
+                // Opción 1: Cambiar estado
+                billboard.Status = false;
+                await _billboardRepository.UpdateAsync(billboard);
 
-                await _bookingRepository.SaveAsync();
-                await _seatRepository.SaveAsync();
-                await _billboardRepository.SaveAsync();
+              
 
-                
                 Console.WriteLine("Clientes afectados por la cancelación:");
-                foreach (var client in affectedClients)
+                foreach (var client in affectedClients.Distinct())
                 {
-                    Console.WriteLine(client);
+                    Console.WriteLine($"- {client}");
                 }
             });
         }
@@ -103,18 +102,20 @@ namespace FERSOFT.ERP.Application.Services.Cinema
             {
                 MovieId = billboardDto.MovieId,
                 RoomId = billboardDto.RoomId,
-                Date = billboardDto.Date
+                Date = billboardDto.Date,
+                FunctionDate = billboardDto.FunctionDate,
+                MovieTitle = billboardDto.MovieName
             };
 
             await _billboardRepository.AddAsync(billboard);
-            await _billboardRepository.SaveAsync();
+            //await _billboardRepository.SaveAsync();
 
             var billboardDtoResult = _mapper.Map<BillboardDto>(billboard);
 
             
             billboardDtoResult.MovieName = movie.Name;
             billboardDtoResult.RoomName = room.Name;
-
+            
             return billboardDtoResult;
         }
 

@@ -8,6 +8,7 @@ namespace FERSOFT.ERP.Application.DTOs.Cinema
 {
     public class BookingDto
     {
+        public int Id { get; set; }
         public int CustomerId { get; set; }
         public int SeatId { get; set; }
         public DateTime Date { get; set; }

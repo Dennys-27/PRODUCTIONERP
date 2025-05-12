@@ -20,8 +20,7 @@ namespace FERSOFT.ERP.Application.Interfaces.Cinema
         Task UpdateSeatAsync(SeatDto seatDto);
 
         // Delete (o Inhabilitar)
-        Task DisableSeatAsync(int seatId);
-        Task EnableSeatAsync(int seatId);
+      
         Task DeleteSeatAsync(int seatId); // borrado real
     }
 }

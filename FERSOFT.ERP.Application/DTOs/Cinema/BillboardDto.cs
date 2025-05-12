@@ -15,7 +15,8 @@ namespace FERSOFT.ERP.Application.DTOs.Cinema
         public string RoomName { get; set; }
         public string MovieName { get; set; }
         public string MovieTitle { get; set; }
-        public string FunctionDate { get; set; }
+        
+        public DateTime FunctionDate { get; set; }
 
 
     }

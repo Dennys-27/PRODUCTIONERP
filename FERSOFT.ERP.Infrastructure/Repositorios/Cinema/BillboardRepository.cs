@@ -18,6 +18,8 @@ namespace FERSOFT.ERP.Infrastructure.Repositorios.Cinema
         {
             _context = context;
         }
+
+        // Ejecutar una operación dentro de una transacción
         public async Task ExecuteInTransactionAsync(Func<Task> operation)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -32,14 +34,14 @@ namespace FERSOFT.ERP.Infrastructure.Repositorios.Cinema
                 throw;
             }
         }
-
+        // Obtener una cartelera con sus detalles por su ID
         public async Task<BillboardEntity> GetBillboardWithDetailsAsync(int billboardId)
         {
             return await _context.Billboards
                 .Include(b => b.Room)
                 .ThenInclude(r => r.Seats)
                 .Include(b => b.Bookings)
-                .ThenInclude(bk => bk.Client)
+                .ThenInclude(bk => bk.Customer)
                 .FirstOrDefaultAsync(b => b.Id == billboardId);
         }
     }

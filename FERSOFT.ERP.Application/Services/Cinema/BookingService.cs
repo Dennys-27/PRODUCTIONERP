@@ -18,6 +18,7 @@ namespace FERSOFT.ERP.Application.Services.Cinema
         private readonly IRepositoryGeneric<SeatEntity> _seatRepository;
         private readonly IRepositoryGeneric<CustomerEntity> _customerRepository;
         private readonly IRepositoryGeneric<BillboardEntity> _billboardRepository;
+        
         private readonly IBookingRepository _bookingRepo;
 
         private readonly IMapper _mapper;
@@ -35,31 +36,33 @@ namespace FERSOFT.ERP.Application.Services.Cinema
             _customerRepository = customerRepository;
             _mapper = mapper;
             _bookingRepo = bookingRepo;
+            _billboardRepository = billboardRepository;
             
         }
 
-        // Método para cancelar una reserva
-        public async Task CancelBookingAsync(int bookingId)
+        public async Task CancelarReservaYInhabilitarButacaAsync(CancelarReservaButacaDto dto)
         {
             await _bookingRepo.ExecuteInTransactionAsync(async () =>
             {
-                var booking = await _bookingRepository.GetByIdAsync(bookingId);
-                if (booking == null)
-                    throw new NotFoundException("Booking not found");
+                
+                var seat = await _seatRepository.GetByIdAsync(dto.ButacaId);
+                
+                var booking = await _bookingRepository.GetByIdAsync(dto.ReservaId);
 
-                var seat = await _seatRepository.GetByIdAsync(booking.SeatId);
-                if (seat != null)
-                {
-                    seat.IsAvailable = true;
-                    await _seatRepository.UpdateAsync(seat);
-                }
+                if (seat == null || booking == null)
+                    throw new InvalidOperationException("Butaca o reserva no encontrada.");
 
+                
+                seat.IsAvailable = false;
+                await _seatRepository.UpdateAsync(seat);
+
+                
+                booking.Status = false;
                 await _bookingRepository.UpdateAsync(booking);
-
-                await _bookingRepository.SaveAsync();
-                await _seatRepository.SaveAsync();
             });
         }
+
+        
 
         // Método para crear una reserva
         public async Task<BookingDto> CreateBookingAsync(BookingDto bookingDto)
@@ -69,7 +72,7 @@ namespace FERSOFT.ERP.Application.Services.Cinema
                 throw new NotFoundException("Customer not found");
 
             var seat = await _seatRepository.GetByIdAsync(bookingDto.SeatId);
-            if (seat == null || !seat.IsAvailable)
+            if (seat == null)
                 throw new InvalidOperationException("Seat not available");
 
             var billboard = await _billboardRepository.GetByIdAsync(bookingDto.BillboardId);
@@ -77,13 +80,12 @@ namespace FERSOFT.ERP.Application.Services.Cinema
                 throw new NotFoundException("Billboard not found");
 
             
+
             var booking = _mapper.Map<BookingEntity>(bookingDto);
             await _bookingRepository.AddAsync(booking);
 
             seat.IsAvailable = false;
             await _seatRepository.UpdateAsync(seat);
-
-            await _bookingRepository.SaveAsync();
 
             return _mapper.Map<BookingDto>(booking);
         }
@@ -101,6 +103,15 @@ namespace FERSOFT.ERP.Application.Services.Cinema
             return _mapper.Map<IEnumerable<BookingDto>>(bookings);
         }
 
+        public async Task GetBookingByIdAsync(int bookingId)
+        {
+            var bookings = await _bookingRepository.GetByIdAsync(bookingId);
+            if (bookings == null)
+                throw new NotFoundException("Seat not found.");
 
+            await _bookingRepository.DeleteAsync(bookings);
+        }
+
+        
     }
 }

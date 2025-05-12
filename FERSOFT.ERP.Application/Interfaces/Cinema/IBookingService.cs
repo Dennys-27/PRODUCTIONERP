@@ -15,9 +15,9 @@ namespace FERSOFT.ERP.Application.Interfaces.Cinema
         // Devuelve todas las reservas hechas por un cliente usando su ID
         Task<IEnumerable<BookingDto>> GetBookingsByCustomerAsync(int customerId);
 
-        // Cancela una reserva usando su ID
-        Task CancelBookingAsync(int bookingId);
-
+        //Cancelar inhabilitar la butaca y cancelar la reserva
+        Task CancelarReservaYInhabilitarButacaAsync(CancelarReservaButacaDto dto);
         
+       
     }
 }

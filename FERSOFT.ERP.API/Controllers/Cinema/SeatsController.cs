@@ -42,57 +42,8 @@ public class SeatsController : ControllerBase
         }
     }
 
-    // Deshabilitar un asiento
-    [Authorize(Roles = "Admin")]
-    [HttpPost("{seatId}/disable")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DisableSeatAsync(int seatId)
-    {
-        var response = new RespuestaAPI();
 
-        try
-        {
-            await _seatService.DisableSeatAsync(seatId);
-            response.StatusCode = HttpStatusCode.OK;
-            response.Result = new { message = "Seat disabled successfully" };
-            return Ok(response);
-        }
-        catch (Exception ex)
-        {
-            response.StatusCode = HttpStatusCode.InternalServerError;
-            response.IsSuccess = false;
-            response.ErrorMessages.Add($"Error: {ex.Message}");
-            return StatusCode(500, response);
-        }
-    }
-
-    // Habilitar un asiento
-    [Authorize(Roles = "Admin")]
-    [HttpPost("{seatId}/enable")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> EnableSeatAsync(int seatId)
-    {
-        var response = new RespuestaAPI();
-
-        try
-        {
-            await _seatService.EnableSeatAsync(seatId);
-            response.StatusCode = HttpStatusCode.OK;
-            response.Result = new { message = "Seat enabled successfully" };
-            return Ok(response);
-        }
-        catch (Exception ex)
-        {
-            response.StatusCode = HttpStatusCode.InternalServerError;
-            response.IsSuccess = false;
-            response.ErrorMessages.Add($"Error: {ex.Message}");
-            return StatusCode(500, response);
-        }
-    }
+    
 
     // Crear un asiento
     [Authorize(Roles = "Admin")]
@@ -156,14 +107,15 @@ public class SeatsController : ControllerBase
         }
     }
 
-    // Actualizar un asiento
     [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateSeatAsync(int id, [FromBody] SeatDto seatDto)
     {
+        var response = new RespuestaAPI();
+
         try
         {
             if (id != seatDto.Id)
@@ -172,15 +124,16 @@ public class SeatsController : ControllerBase
             }
 
             await _seatService.UpdateSeatAsync(seatDto);
-            return NoContent();
+
+            response.IsSuccess = true;
+            response.StatusCode = HttpStatusCode.OK;
+            response.Result = new { message = "Seat updated successfully." };
+            return Ok(response);
         }
         catch (Exception ex)
         {
-            var response = new RespuestaAPI
-            {
-                IsSuccess = false,
-                StatusCode = HttpStatusCode.InternalServerError,
-            };
+            response.IsSuccess = false;
+            response.StatusCode = HttpStatusCode.InternalServerError;
             response.ErrorMessages.Add($"Error: {ex.Message}");
             return StatusCode(500, response);
         }

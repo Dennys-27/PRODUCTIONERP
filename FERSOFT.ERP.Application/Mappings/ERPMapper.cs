@@ -47,6 +47,25 @@ namespace FERSOFT.ERP.Application.Mappings
                 .ForMember(dest => dest.RowNumber, opt => opt.MapFrom(src => src.RowNumber))  // Mapeo de la fila
                 .ForMember(dest => dest.IsAvailable, opt => opt.MapFrom(src => src.IsAvailable))  // Mapeo de la disponibilidad
                 .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => src.RoomId));       // Mapeo del RoomId
+
+
+
+            CreateMap<BookingDto, BookingEntity>()
+            // Si en BookingEntity hay propiedades que no existen en el DTO, ignóralas:
+            .ForMember(dest => dest.Customer, opt => opt.Ignore())
+            .ForMember(dest => dest.Seat, opt => opt.Ignore())
+            .ForMember(dest => dest.Billboard, opt => opt.Ignore())
+            .ForMember(dest => dest.Movie, opt => opt.Ignore())
+            .ForMember(dest => dest.Customer, opt => opt.Ignore());
+
+            CreateMap<BookingEntity, BookingDto>()
+                // Si BookingEntity tiene más campos que no están en el DTO, ignóralos:
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date))
+                .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
+                .ForMember(dest => dest.SeatId, opt => opt.MapFrom(src => src.SeatId))
+                .ForMember(dest => dest.MovieId, opt => opt.MapFrom(src => src.MovieId))
+                .ForMember(dest => dest.BillboardId, opt => opt.MapFrom(src => src.BillboardId));
         }
        
         
