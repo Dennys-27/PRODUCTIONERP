@@ -21,15 +21,20 @@ namespace FERSOFT.ERP.Infrastructure.Repositorios
         //a.) Generar el query necesario para obtener las reservas de películas cuyo genero sea terror y con un rango de fechas
         public async Task<IEnumerable<BookingEntity>> GetTerrorBookingsInDateRangeAsync(DateTime startDate, DateTime endDate)
         {
-            var bookings = await _db.Bookings
+            var all = await _db.Bookings
+                .Include(b => b.Movie)
+                .Where(b => b.Date >= startDate && b.Date <= endDate)
+                .ToListAsync();  
+
+                        var terrorBookings = await _db.Bookings
                 .Include(b => b.Movie)
                 .Where(b =>
-                    b.Movie.Genre.ToString().ToLower() == "terror" &&  
-                    b.Date >= startDate &&   
+                    b.Movie.Genre == MovieGenreEnum.HORROR &&
+                    b.Date >= startDate &&
                     b.Date <= endDate)
                 .ToListAsync();
 
-            return bookings;
+            return terrorBookings;
         }
 
 
