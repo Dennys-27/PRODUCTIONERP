@@ -50,10 +50,11 @@ namespace PRODUCTIONERP.TESTING
             );
         }
 
+        // Prueba unitaria: CreateBookingAsync lanza InvalidOperationException si el asiento no está disponible
         [Fact]
         public async Task CreateBookingAsync_Should_Throw_When_Seat_Is_Not_Available()
         {
-            // Arrange
+            
             var dto = new BookingDto
             {
                 CustomerId = 1,
@@ -63,26 +64,70 @@ namespace PRODUCTIONERP.TESTING
                 Date = DateTime.UtcNow
             };
 
-            // Customer exists
+            
             _customerGenericRepoMock
                 .Setup(r => r.GetByIdAsync(dto.CustomerId))
                 .ReturnsAsync(new CustomerEntity { Id = dto.CustomerId });
 
-            // Seat does NOT exist -> triggers InvalidOperationException
+            
             _seatGenericRepoMock
                 .Setup(r => r.GetByIdAsync(dto.SeatId))
                 .ReturnsAsync((SeatEntity)null);
 
-            // Billboard exists (so we pass that check)
+            
             _billboardGenericRepoMock
                 .Setup(r => r.GetByIdAsync(dto.BillboardId))
                 .ReturnsAsync(new BillboardEntity { Id = dto.BillboardId });
 
-            // Act & Assert
+            
             var ex = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _service.CreateBookingAsync(dto));
 
             Assert.Equal("Seat not available", ex.Message);
         }
+
+
+
+        // Prueba unitaria: CancelarReservaYInhabilitarButacaAsync actualiza asiento y reserva dentro de la transacción
+        [Fact]
+        public async Task CancelarReservaYInhabilitarButacaAsync_Should_UpdateSeatAndCancelBooking_InTransaction()
+        {
+            
+            var dto = new CancelarReservaButacaDto
+            {
+                ButacaId = 10,
+                ReservaId = 20
+            };
+
+            var seat = new SeatEntity { Id = dto.ButacaId, IsAvailable = true };
+            var booking = new BookingEntity { Id = dto.ReservaId, Status = true };
+
+            _seatGenericRepoMock
+                .Setup(r => r.GetByIdAsync(dto.ButacaId))
+                .ReturnsAsync(seat);
+
+            _bookingGenericRepoMock
+                .Setup(r => r.GetByIdAsync(dto.ReservaId))
+                .ReturnsAsync(booking);
+
+            
+            _bookingRepoMock
+                .Setup(r => r.ExecuteInTransactionAsync(It.IsAny<Func<Task>>()))
+                .Returns<Func<Task>>(async op => { await op(); });
+
+            
+            await _service.CancelarReservaYInhabilitarButacaAsync(dto);
+
+            
+            Assert.False(seat.IsAvailable);
+
+            
+            _seatGenericRepoMock.Verify(r => r.UpdateAsync(It.Is<SeatEntity>(s => s == seat)), Times.Once);
+            _bookingGenericRepoMock.Verify(r => r.UpdateAsync(It.Is<BookingEntity>(b => b == booking && b.Status == false)), Times.Once);
+
+           
+            _bookingRepoMock.Verify(r => r.ExecuteInTransactionAsync(It.IsAny<Func<Task>>()), Times.Once);
+        }
     }
+
 }
