@@ -22,7 +22,13 @@ namespace FERSOFT.ERP.API.Controllers.Cinema
 
         }
 
-        // Cancelar Cartelera
+        // ===============================
+        // Cancelar Cartelera (Funcionalidad Importante)
+        // ===============================
+
+        // A) Cancelar cartelera y todas las reservas de la sala, habilitar butacas e imprimir clientes afectados
+        // B) Si la fecha de la función es anterior a hoy, lanzar excepción personalizada:
+        //    "No se puede cancelar funciones de la cartelera con fecha anterior a la actual"
         [Authorize(Roles = "Admin")]
         [HttpPost("cancelar-cartelera")]
         [ProducesResponseType(StatusCodes.Status200OK)]

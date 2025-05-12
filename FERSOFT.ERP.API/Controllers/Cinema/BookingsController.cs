@@ -83,50 +83,7 @@ namespace FERSOFT.ERP.API.Controllers.Cinema
             }
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpGet("estado-butacas-hoy")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetSeatsStatusTodayAsync()
-        {
-            var response = new RespuestaAPI();
-            try
-            {
-                var today = DateTime.Now.Date;
-                var billboards = await _billboardService.GetAllBillboardsAsync();
-                var roomSummaries = new Dictionary<int, SeatStatusDto>();
-
-                foreach (var billboard in billboards.Where(b => b.Date.Date == today))
-                {
-                    if (!roomSummaries.ContainsKey(billboard.RoomId))
-                    {
-                        var seats = await _seatService.GetSeatsByRoomAsync(billboard.RoomId);
-
-                        var summary = new SeatStatusDto
-                        {
-                            RoomName = seats.FirstOrDefault()?.RoomName ?? $"Sala {billboard.RoomId}",
-                            AvailableSeats = seats.Count(s => s.IsAvailable),
-                            OccupiedSeats = seats.Count(s => !s.IsAvailable)
-                        };
-
-                        roomSummaries[billboard.RoomId] = summary;
-                    }
-                }
-
-                response.StatusCode = HttpStatusCode.OK;
-                response.Result = roomSummaries.Values.ToList();
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                response.StatusCode = HttpStatusCode.InternalServerError;
-                response.IsSuccess = false;
-                response.ErrorMessages.Add($"Error: {ex.Message}");
-                return StatusCode(500, response);
-            }
-        }
-
+        
 
         // Crear una nueva reserva
         [HttpPost]
@@ -196,6 +153,9 @@ namespace FERSOFT.ERP.API.Controllers.Cinema
                 return StatusCode(500, response);
             }
         }
+
+
+        
 
     }
 }

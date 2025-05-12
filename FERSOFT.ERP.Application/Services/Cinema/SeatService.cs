@@ -16,11 +16,11 @@ namespace FERSOFT.ERP.Application.Services.Cinema
     {
         private readonly IRepositoryGeneric<SeatEntity> _seatRepositoty;
         private readonly IMapper _mapper;
-        
+        private readonly IReportRepository _reportRepository;
 
-        public SeatService(IMapper mapper, IRepositoryGeneric<SeatEntity> seatRepositoty)
+        public SeatService(IMapper mapper, IRepositoryGeneric<SeatEntity> seatRepositoty, IReportRepository reportRepository)
         {
-            
+            _reportRepository = reportRepository;
             _seatRepositoty = seatRepositoty;
             _mapper = mapper;
         }
@@ -95,6 +95,11 @@ namespace FERSOFT.ERP.Application.Services.Cinema
             seat.RoomId = seatDto.RoomId;
 
             await _seatRepositoty.UpdateAsync(seat);
-        }   
+        }
+
+        public async Task<IEnumerable<SeatStatusDto>> GetSeatStatusByRoomForTodayAsync()
+        {
+            return await _reportRepository.GetSeatStatusByRoomForTodayAsync();
+        }
     }
 }

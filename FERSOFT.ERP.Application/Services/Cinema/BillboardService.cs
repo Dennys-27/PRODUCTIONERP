@@ -21,7 +21,7 @@ namespace FERSOFT.ERP.Application.Services.Cinema
         private readonly IBillboardRepository _billboardRepo;
         private readonly IRepositoryGeneric<BookingEntity> _bookingRepository;
         private readonly IMapper _mapper;
-
+        private readonly IReportRepository _reportRepository;
 
         public BillboardService
             (
@@ -29,7 +29,8 @@ namespace FERSOFT.ERP.Application.Services.Cinema
             IRepositoryGeneric<MovieEntity> movieRepository,
             IRepositoryGeneric<RoomEntity> roomRepository,
             IBillboardRepository billboardRepo,
-            IMapper mapper
+            IMapper mapper,
+            IReportRepository reportRepository
             )
         {
             _billboardRepository = billboardRepository;
@@ -37,9 +38,11 @@ namespace FERSOFT.ERP.Application.Services.Cinema
             _roomRepository = roomRepository;
             _mapper = mapper;
             _billboardRepo = billboardRepo;
+            _reportRepository = reportRepository;
         }
 
-        // Método para cancelar un cartel publicitario
+        // Método para cancelar un cartel publicitario Metodo Importante
+        // A ) Implementar el método con transaccionalidad para inhabilitar la butaca y cancelar la reserva.
         public async Task CancelBillboardAsync(int billboardId)
         {
             await _billboardRepo.ExecuteInTransactionAsync(async () =>
@@ -162,6 +165,12 @@ namespace FERSOFT.ERP.Application.Services.Cinema
 
             await _billboardRepository.UpdateAsync(billboard);
             await _billboardRepository.SaveAsync(); // si aplica
+        }
+
+        public async Task<IEnumerable<BookingDto>> GetTerrorBookingsInDateRangeAsync(DateTime startDate, DateTime endDate)
+        {
+            var bookings = await _reportRepository.GetTerrorBookingsInDateRangeAsync(startDate, endDate);
+            return _mapper.Map<IEnumerable<BookingDto>>(bookings);
         }
     }
 }

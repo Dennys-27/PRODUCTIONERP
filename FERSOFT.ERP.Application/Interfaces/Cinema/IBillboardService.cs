@@ -27,5 +27,7 @@ namespace FERSOFT.ERP.Application.Interfaces.Cinema
         // Cancela una cartelera (lógica de negocio específica)
         Task CancelBillboardAsync(int billboardId);
 
+        //Obtener las peliculas de terror
+        Task<IEnumerable<BookingDto>> GetTerrorBookingsInDateRangeAsync(DateTime startDate, DateTime endDate);
     }
 }

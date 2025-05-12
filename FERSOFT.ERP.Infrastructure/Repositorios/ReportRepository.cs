@@ -18,7 +18,7 @@ namespace FERSOFT.ERP.Infrastructure.Repositorios
             _db = db;
         }
 
-        
+        //a.) Generar el query necesario para obtener las reservas de películas cuyo genero sea terror y con un rango de fechas
         public async Task<IEnumerable<BookingEntity>> GetTerrorBookingsInDateRangeAsync(DateTime startDate, DateTime endDate)
         {
             var bookings = await _db.Bookings
@@ -35,7 +35,7 @@ namespace FERSOFT.ERP.Infrastructure.Repositorios
 
 
 
-        
+        //B) Generar el query necesario para obtener el numero de butacas disponibles y ocupadas por sala en la cartelera del día actual.
         public async Task<IEnumerable<SeatStatusDto>> GetSeatStatusByRoomForTodayAsync()
         {
             var today = DateTime.Today;

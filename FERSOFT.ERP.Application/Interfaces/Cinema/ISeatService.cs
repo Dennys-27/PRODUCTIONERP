@@ -1,4 +1,5 @@
 ﻿using FERSOFT.ERP.Application.DTOs.Cinema;
+using FERSOFT.ERP.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,5 +23,8 @@ namespace FERSOFT.ERP.Application.Interfaces.Cinema
         // Delete (o Inhabilitar)
       
         Task DeleteSeatAsync(int seatId); // borrado real
+
+
+        Task<IEnumerable<SeatStatusDto>> GetSeatStatusByRoomForTodayAsync();
     }
 }

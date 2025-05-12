@@ -18,6 +18,5 @@ namespace FERSOFT.ERP.Application.Interfaces.Cinema
         //Cancelar inhabilitar la butaca y cancelar la reserva
         Task CancelarReservaYInhabilitarButacaAsync(CancelarReservaButacaDto dto);
         
-       
     }
 }
