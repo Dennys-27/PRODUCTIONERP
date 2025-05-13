@@ -74,7 +74,22 @@ builder.Services.AddAuthentication(opt =>
 });
 builder.Services.AddAuthorization();
 
-// 6. Controllers + Swagger con JWT
+// 6. Agregar CORS
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials(); // Si usas cookies o autenticación
+        });
+});
+
+
+// 7. Controllers + Swagger con JWT
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -102,7 +117,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// 7. GlobalExceptionHandler + ProblemDetails
+// 8. GlobalExceptionHandler + ProblemDetails
 builder.Services.AddSingleton<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails(opts =>
 {
@@ -131,7 +146,7 @@ builder.Services.AddProblemDetails(opts =>
 
 var app = builder.Build();
 
-// 8. Middleware pipeline
+// 9. Middleware pipeline
 
 if (app.Environment.IsDevelopment())
 {
@@ -152,12 +167,14 @@ app.UseExceptionHandler(errApp =>
     });
 });
 
+app.UseCors("AllowFrontend");  // Configuración de CORS
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-// 9. Seed inicial
+// 10. Seed inicial
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
